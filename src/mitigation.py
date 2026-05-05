@@ -18,6 +18,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from xgboost import XGBClassifier
 
 
 # ---------------------------------------------------------------------------
@@ -37,8 +38,12 @@ def compute_reweights(y_train: pd.Series, group_train: pd.Series) -> np.ndarray:
     return weights.values
 
 
-def train_reweighted(X_train, y_train, group_train: pd.Series):
-    """Train LR and RF with reweighting on the given sensitive attribute."""
+def train_reweighted(X_train, y_train, group_train: pd.Series,
+                     include_xgboost: bool = False):
+    """Train LR + RF (and optionally XGBoost) with reweighting on the given sensitive attribute.
+
+    MLP is excluded because sklearn MLPClassifier.fit() does not accept sample_weight.
+    """
     weights = compute_reweights(y_train, group_train)
 
     lr = make_pipeline(StandardScaler(),
@@ -48,7 +53,19 @@ def train_reweighted(X_train, y_train, group_train: pd.Series):
     rf = RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1)
     rf.fit(X_train, y_train, sample_weight=weights)
 
-    return {"logistic_regression_rw": lr, "random_forest_rw": rf}
+    out = {"logistic_regression_rw": lr, "random_forest_rw": rf}
+
+    if include_xgboost:
+        xgb = XGBClassifier(
+            n_estimators=200, max_depth=6, learning_rate=0.1,
+            subsample=0.8, colsample_bytree=0.8,
+            random_state=42, n_jobs=-1, verbosity=0,
+            eval_metric="logloss",
+        )
+        xgb.fit(X_train, y_train, sample_weight=weights)
+        out["xgboost_rw"] = xgb
+
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -164,17 +181,19 @@ def plot_tpr_comparison(before: dict, after: dict, group_col: str,
 
 def run_mitigation(base_models: dict, X_train, X_test, y_train, y_test,
                    df_train: pd.DataFrame, df_test: pd.DataFrame,
-                   results_dir: str):
+                   results_dir: str, include_xgboost_rw: bool = False):
     """
     Run both mitigation methods and save results.
 
-    df_train / df_test : original (non-encoded) dataframes with demographic cols.
+    df_train / df_test  : original (non-encoded) dataframes with demographic cols.
+    include_xgboost_rw  : if True, also produce a reweighted XGBoost model.
     """
     SENSITIVE = "gender"   # primary attribute for reweighting demo
 
     print("\n=== Mitigation: Reweighting ===")
     group_train = df_train[SENSITIVE].reset_index(drop=True)
-    rw_models = train_reweighted(X_train, y_train, group_train)
+    rw_models = train_reweighted(X_train, y_train, group_train,
+                                 include_xgboost=include_xgboost_rw)
 
     rw_metrics = {}
     for name, model in rw_models.items():
@@ -182,7 +201,7 @@ def run_mitigation(base_models: dict, X_train, X_test, y_train, y_test,
         y_prob = model.predict_proba(X_test)[:, 1]
         rw_metrics[name] = {
             "accuracy": round(accuracy_score(y_test, y_pred), 4),
-            "f1": round(f1_score(y_test, y_pred), 4),
+            "f1": round(f1_score(y_test, y_pred, average="weighted"), 4),
             "auc": round(roc_auc_score(y_test, y_prob), 4),
         }
         print(f"  {name}: Accuracy={rw_metrics[name]['accuracy']} | "
@@ -193,7 +212,6 @@ def run_mitigation(base_models: dict, X_train, X_test, y_train, y_test,
     for name, model in base_models.items():
         for group_col in ["gender", "disability", "age_band"]:
             group_test = df_test[group_col].reset_index(drop=True)
-            group_train_col = df_train[group_col].reset_index(drop=True)
 
             # TPR before
             y_pred_default = model.predict(X_test)
@@ -208,7 +226,10 @@ def run_mitigation(base_models: dict, X_train, X_test, y_train, y_test,
             after_tpr = group_tpr(y_test.reset_index(drop=True),
                                   y_pred_thresh, group_test)
 
-            tpr_gap_before = round(max(before_tpr.values()) - min(before_tpr.values()), 4)
+            tpr_gap_before = round(max(v for v in before_tpr.values()
+                                       if not np.isnan(v))
+                                   - min(v for v in before_tpr.values()
+                                         if not np.isnan(v)), 4)
             tpr_gap_after  = round(max(v for v in after_tpr.values()
                                        if not np.isnan(v))
                                    - min(v for v in after_tpr.values()

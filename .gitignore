@@ -8,3 +8,5 @@ __pycache__/
 *.egg-info/
 .env
 .claude/
+readme.md
+README.md

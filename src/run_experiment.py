@@ -1,5 +1,10 @@
 """
-run_experiment.py — End-to-end pipeline for March 23 milestone.
+run_experiment.py — Original March 23 milestone pipeline (binary, LR + RF).
+
+NOTE — superseded by run_advanced_binary.py, which trains the same LR + RF
+plus XGBoost and MLP on the same data, producing identical numbers for
+LR and RF. Kept here as the original entry point for project history;
+new analyses should use run_advanced_binary.py instead.
 
 Usage:
     python src/run_experiment.py
@@ -12,13 +17,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from data_prep import build_dataset
 from features import get_feature_matrix, FAIRNESS_FEATURES
-from models import run_training, split_data
+from models import run_training
 from fairness import run_fairness_analysis
 from mitigation import run_mitigation
 from explain import run_shap_explanations
 
 DATA_DIR = "Dataset"
-RESULTS_DIR = "results"
+RESULTS_DIR = "results/binary_aggregated"
 
 
 def main():
@@ -36,7 +41,7 @@ def main():
     print(f"Features: {list(X.columns)}\n")
 
     # 3. Train baseline models + evaluate
-    models, metrics, splits = run_training(X, y, RESULTS_DIR)
+    models, _, splits = run_training(X, y, RESULTS_DIR)
     X_train, X_test, y_train, y_test = splits
 
     # Raw demographic columns for fairness / mitigation
@@ -61,7 +66,7 @@ def main():
 
     # 6. SHAP explanations on Random Forest
     run_shap_explanations(
-        rf_model=models["random_forest"],
+        tree_model=models["random_forest"],
         X_test=X_test,
         y_test=y_test.reset_index(drop=True),
         feature_names=list(X.columns),

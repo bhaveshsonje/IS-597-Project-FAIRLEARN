@@ -1,0 +1,15 @@
+pipeline,model,accuracy,gap_before,gap_after
+binary_aggregated,logistic_regression,0.6967,0.1033,0.0072
+binary_aggregated,random_forest,0.7219,0.0872,0.0104
+advanced_binary,logistic_regression,0.6967,0.1033,0.0072
+advanced_binary,random_forest,0.7219,0.0872,0.0104
+advanced_binary,xgboost,0.732,0.0976,0.019
+advanced_binary,mlp,0.7197,0.144,0.0281
+BBB,logistic_regression,0.7118,0.3404,0.2854
+BBB,random_forest,0.7345,0.277,0.231
+CCC,logistic_regression,0.7452,0.1806,0.0506
+CCC,random_forest,0.7486,0.1217,0.0847
+DDD,logistic_regression,0.7769,0.2164,0.0839
+DDD,random_forest,0.7618,0.1707,0.0982
+FFF,logistic_regression,0.7392,0.261,0.2439
+FFF,random_forest,0.7469,0.2326,0.2064

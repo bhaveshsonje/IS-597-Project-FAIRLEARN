@@ -1,0 +1,274 @@
+{
+  "logistic_regression": {
+    "gender": {
+      "M": {
+        "n": 1267,
+        "accuracy": 0.4886,
+        "per_class_recall": {
+          "Pass": 0.4093,
+          "Distinction": 0.73,
+          "Fail": 0.457,
+          "Withdrawn": 0.5526
+        }
+      },
+      "F": {
+        "n": 286,
+        "accuracy": 0.5385,
+        "per_class_recall": {
+          "Pass": 0.46,
+          "Distinction": 0.7353,
+          "Fail": 0.3333,
+          "Withdrawn": 0.6535
+        }
+      }
+    },
+    "disability": {
+      "N": {
+        "n": 1413,
+        "accuracy": 0.4989,
+        "per_class_recall": {
+          "Pass": 0.4286,
+          "Distinction": 0.712,
+          "Fail": 0.4487,
+          "Withdrawn": 0.565
+        }
+      },
+      "Y": {
+        "n": 140,
+        "accuracy": 0.4857,
+        "per_class_recall": {
+          "Pass": 0.2791,
+          "Distinction": 1.0,
+          "Fail": 0.3333,
+          "Withdrawn": 0.6379
+        }
+      }
+    },
+    "age_band": {
+      "0-35": {
+        "n": 1122,
+        "accuracy": 0.5009,
+        "per_class_recall": {
+          "Pass": 0.4245,
+          "Distinction": 0.716,
+          "Fail": 0.4535,
+          "Withdrawn": 0.5805
+        }
+      },
+      "35-55": {
+        "n": 425,
+        "accuracy": 0.4918,
+        "per_class_recall": {
+          "Pass": 0.4,
+          "Distinction": 0.7547,
+          "Fail": 0.3803,
+          "Withdrawn": 0.5649
+        }
+      }
+    }
+  },
+  "random_forest": {
+    "gender": {
+      "M": {
+        "n": 1267,
+        "accuracy": 0.5549,
+        "per_class_recall": {
+          "Pass": 0.8165,
+          "Distinction": 0.17,
+          "Fail": 0.2405,
+          "Withdrawn": 0.5553
+        }
+      },
+      "F": {
+        "n": 286,
+        "accuracy": 0.5804,
+        "per_class_recall": {
+          "Pass": 0.9,
+          "Distinction": 0.0882,
+          "Fail": 0.2157,
+          "Withdrawn": 0.6139
+        }
+      }
+    },
+    "disability": {
+      "N": {
+        "n": 1413,
+        "accuracy": 0.5584,
+        "per_class_recall": {
+          "Pass": 0.8264,
+          "Distinction": 0.152,
+          "Fail": 0.2468,
+          "Withdrawn": 0.5579
+        }
+      },
+      "Y": {
+        "n": 140,
+        "accuracy": 0.5714,
+        "per_class_recall": {
+          "Pass": 0.8837,
+          "Distinction": 0.1111,
+          "Fail": 0.1333,
+          "Withdrawn": 0.6379
+        }
+      }
+    },
+    "age_band": {
+      "0-35": {
+        "n": 1122,
+        "accuracy": 0.5606,
+        "per_class_recall": {
+          "Pass": 0.8278,
+          "Distinction": 0.1605,
+          "Fail": 0.2491,
+          "Withdrawn": 0.569
+        }
+      },
+      "35-55": {
+        "n": 425,
+        "accuracy": 0.5624,
+        "per_class_recall": {
+          "Pass": 0.8412,
+          "Distinction": 0.1321,
+          "Fail": 0.1972,
+          "Withdrawn": 0.5725
+        }
+      }
+    }
+  },
+  "xgboost": {
+    "gender": {
+      "M": {
+        "n": 1267,
+        "accuracy": 0.5264,
+        "per_class_recall": {
+          "Pass": 0.5988,
+          "Distinction": 0.49,
+          "Fail": 0.3849,
+          "Withdrawn": 0.55
+        }
+      },
+      "F": {
+        "n": 286,
+        "accuracy": 0.5559,
+        "per_class_recall": {
+          "Pass": 0.6,
+          "Distinction": 0.3824,
+          "Fail": 0.3333,
+          "Withdrawn": 0.6832
+        }
+      }
+    },
+    "disability": {
+      "N": {
+        "n": 1413,
+        "accuracy": 0.5336,
+        "per_class_recall": {
+          "Pass": 0.604,
+          "Distinction": 0.472,
+          "Fail": 0.391,
+          "Withdrawn": 0.565
+        }
+      },
+      "Y": {
+        "n": 140,
+        "accuracy": 0.5143,
+        "per_class_recall": {
+          "Pass": 0.5349,
+          "Distinction": 0.3333,
+          "Fail": 0.2333,
+          "Withdrawn": 0.6724
+        }
+      }
+    },
+    "age_band": {
+      "0-35": {
+        "n": 1122,
+        "accuracy": 0.5374,
+        "per_class_recall": {
+          "Pass": 0.6038,
+          "Distinction": 0.4691,
+          "Fail": 0.3829,
+          "Withdrawn": 0.592
+        }
+      },
+      "35-55": {
+        "n": 425,
+        "accuracy": 0.52,
+        "per_class_recall": {
+          "Pass": 0.5882,
+          "Distinction": 0.4528,
+          "Fail": 0.3521,
+          "Withdrawn": 0.5496
+        }
+      }
+    }
+  },
+  "mlp": {
+    "gender": {
+      "M": {
+        "n": 1267,
+        "accuracy": 0.483,
+        "per_class_recall": {
+          "Pass": 0.4698,
+          "Distinction": 0.49,
+          "Fail": 0.5189,
+          "Withdrawn": 0.4711
+        }
+      },
+      "F": {
+        "n": 286,
+        "accuracy": 0.479,
+        "per_class_recall": {
+          "Pass": 0.49,
+          "Distinction": 0.4706,
+          "Fail": 0.451,
+          "Withdrawn": 0.4851
+        }
+      }
+    },
+    "disability": {
+      "N": {
+        "n": 1413,
+        "accuracy": 0.4812,
+        "per_class_recall": {
+          "Pass": 0.4774,
+          "Distinction": 0.496,
+          "Fail": 0.5032,
+          "Withdrawn": 0.4657
+        }
+      },
+      "Y": {
+        "n": 140,
+        "accuracy": 0.4929,
+        "per_class_recall": {
+          "Pass": 0.4186,
+          "Distinction": 0.3333,
+          "Fail": 0.5667,
+          "Withdrawn": 0.5345
+        }
+      }
+    },
+    "age_band": {
+      "0-35": {
+        "n": 1122,
+        "accuracy": 0.4955,
+        "per_class_recall": {
+          "Pass": 0.5047,
+          "Distinction": 0.4815,
+          "Fail": 0.5316,
+          "Withdrawn": 0.4598
+        }
+      },
+      "35-55": {
+        "n": 425,
+        "accuracy": 0.4518,
+        "per_class_recall": {
+          "Pass": 0.3941,
+          "Distinction": 0.4906,
+          "Fail": 0.4366,
+          "Withdrawn": 0.5191
+        }
+      }
+    }
+  }
+}

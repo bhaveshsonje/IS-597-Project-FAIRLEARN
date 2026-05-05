@@ -1,0 +1,22 @@
+{
+  "logistic_regression": {
+    "accuracy": 0.6967,
+    "f1": 0.6965,
+    "auc": 0.7718
+  },
+  "random_forest": {
+    "accuracy": 0.7219,
+    "f1": 0.7221,
+    "auc": 0.7946
+  },
+  "xgboost": {
+    "accuracy": 0.732,
+    "f1": 0.7321,
+    "auc": 0.8133
+  },
+  "mlp": {
+    "accuracy": 0.7197,
+    "f1": 0.72,
+    "auc": 0.8056
+  }
+}

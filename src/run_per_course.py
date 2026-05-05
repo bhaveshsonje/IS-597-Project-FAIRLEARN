@@ -1,8 +1,9 @@
 """
-run_per_course.py — Run baseline models + fairness analysis per course module.
+run_per_course.py — Per-module binary pipeline with fairness analysis + mitigation.
 
 Runs on the 4 largest OULAD modules: BBB, FFF, DDD, CCC.
-Results saved to results/<MODULE>/ for each course.
+Each module gets baseline models, fairness analysis, AND mitigation
+(reweighting + per-group thresholding), saved to results/<MODULE>/.
 
 Usage:
     python src/run_per_course.py
@@ -15,8 +16,9 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from data_prep import build_dataset
 from features import get_feature_matrix, FAIRNESS_FEATURES
-from models import run_training, split_data
+from models import run_training
 from fairness import run_fairness_analysis
+from mitigation import run_mitigation
 
 DATA_DIR = "Dataset"
 RESULTS_BASE = "results"
@@ -26,25 +28,34 @@ TARGET_MODULES = ["BBB", "FFF", "DDD", "CCC"]
 
 
 def run_course(df_course, module, results_dir):
-    print(f"\n{'='*50}")
+    print(f"\n{'='*60}")
     print(f"Module: {module}  |  Students: {len(df_course)}")
-    print(f"Target distribution:\n{df_course['target'].value_counts().to_dict()}")
+    print(f"Target distribution: {df_course['target'].value_counts().to_dict()}")
 
     X, y = get_feature_matrix(df_course)
 
-    # Need enough samples for a meaningful split
     if len(df_course) < 100:
         print(f"Skipping {module} — too few samples ({len(df_course)})")
         return
 
-    models, metrics, splits = run_training(X, y, results_dir)
+    models, _, splits = run_training(X, y, results_dir)
     X_train, X_test, y_train, y_test = splits
 
-    test_idx = y_test.index
     train_idx = y_train.index
-    X_test_raw = df_course.loc[test_idx, FAIRNESS_FEATURES]
+    test_idx  = y_test.index
+    X_train_raw = df_course.loc[train_idx, FAIRNESS_FEATURES]
+    X_test_raw  = df_course.loc[test_idx,  FAIRNESS_FEATURES]
 
     run_fairness_analysis(models, X_test_raw, X_test, y_test, results_dir)
+
+    run_mitigation(
+        base_models=models,
+        X_train=X_train, X_test=X_test,
+        y_train=y_train, y_test=y_test,
+        df_train=X_train_raw.reset_index(drop=True),
+        df_test=X_test_raw.reset_index(drop=True),
+        results_dir=results_dir,
+    )
 
     print(f"Results saved to {results_dir}/")
 

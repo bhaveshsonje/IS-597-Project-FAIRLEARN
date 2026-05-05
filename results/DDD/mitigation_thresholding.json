@@ -1,0 +1,104 @@
+{
+  "logistic_regression_gender": {
+    "thresholds": {
+      "F": 0.47,
+      "M": 0.52
+    },
+    "tpr_before": {
+      "F": 0.7049,
+      "M": 0.7699
+    },
+    "tpr_after": {
+      "F": 0.7432,
+      "M": 0.7434
+    },
+    "tpr_gap_before": 0.065,
+    "tpr_gap_after": 0.0002
+  },
+  "logistic_regression_disability": {
+    "thresholds": {
+      "N": 0.51,
+      "Y": 0.35
+    },
+    "tpr_before": {
+      "N": 0.7674,
+      "Y": 0.551
+    },
+    "tpr_after": {
+      "N": 0.7526,
+      "Y": 0.7347
+    },
+    "tpr_gap_before": 0.2164,
+    "tpr_gap_after": 0.0179
+  },
+  "logistic_regression_age_band": {
+    "thresholds": {
+      "0-35": 0.47,
+      "35-55": 0.58,
+      "55<=": 0.4
+    },
+    "tpr_before": {
+      "0-35": 0.7143,
+      "35-55": 0.8473,
+      "55<=": 0.6667
+    },
+    "tpr_after": {
+      "0-35": 0.7506,
+      "35-55": 0.7328,
+      "55<=": 0.6667
+    },
+    "tpr_gap_before": 0.1806,
+    "tpr_gap_after": 0.0839
+  },
+  "random_forest_gender": {
+    "thresholds": {
+      "F": 0.45,
+      "M": 0.52
+    },
+    "tpr_before": {
+      "F": 0.6885,
+      "M": 0.7463
+    },
+    "tpr_after": {
+      "F": 0.7486,
+      "M": 0.7375
+    },
+    "tpr_gap_before": 0.0578,
+    "tpr_gap_after": 0.0111
+  },
+  "random_forest_disability": {
+    "thresholds": {
+      "N": 0.52,
+      "Y": 0.4
+    },
+    "tpr_before": {
+      "N": 0.7421,
+      "Y": 0.5714
+    },
+    "tpr_after": {
+      "N": 0.7315,
+      "Y": 0.7347
+    },
+    "tpr_gap_before": 0.1707,
+    "tpr_gap_after": 0.0032
+  },
+  "random_forest_age_band": {
+    "thresholds": {
+      "0-35": 0.47,
+      "35-55": 0.57,
+      "55<=": 0.45
+    },
+    "tpr_before": {
+      "0-35": 0.6987,
+      "35-55": 0.8092,
+      "55<=": 0.6667
+    },
+    "tpr_after": {
+      "0-35": 0.7351,
+      "35-55": 0.7481,
+      "55<=": 0.8333
+    },
+    "tpr_gap_before": 0.1425,
+    "tpr_gap_after": 0.0982
+  }
+}

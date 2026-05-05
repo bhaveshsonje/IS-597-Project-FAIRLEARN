@@ -20,9 +20,7 @@ CATEGORICAL_FEATURES = [
     "gender",
     "age_band",
     "highest_education",
-    "imd_band",
     "disability",
-    "region",
 ]
 
 FAIRNESS_FEATURES = ["gender", "disability", "age_band"]

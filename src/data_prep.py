@@ -7,6 +7,9 @@ import pandas as pd
 
 EARLY_WEEKS = 4  # number of early weeks (each week = 7 days) to consider for VLE activity
 
+MULTICLASS_MAP = {"Pass": 0, "Distinction": 1, "Fail": 2, "Withdrawn": 3}
+CLASS_LABELS   = {0: "Pass", 1: "Distinction", 2: "Fail", 3: "Withdrawn"}
+
 
 def load_tables(data_dir: str) -> dict:
     """Load all relevant OULAD CSV files."""
@@ -21,6 +24,13 @@ def binarize_target(df: pd.DataFrame) -> pd.DataFrame:
     mapping = {"Pass": 1, "Distinction": 1, "Fail": 0, "Withdrawn": 0}
     df = df.copy()
     df["target"] = df["final_result"].map(mapping)
+    return df
+
+
+def encode_multiclass_target(df: pd.DataFrame) -> pd.DataFrame:
+    """Convert final_result to 4-class integer: Pass=0, Distinction=1, Fail=2, Withdrawn=3."""
+    df = df.copy()
+    df["target"] = df["final_result"].map(MULTICLASS_MAP)
     return df
 
 
@@ -55,11 +65,18 @@ def aggregate_assessments(student_assess: pd.DataFrame, assessments: pd.DataFram
     return agg
 
 
-def build_dataset(data_dir: str) -> pd.DataFrame:
-    """Full pipeline: load → merge → clean → return student-level dataframe."""
+def build_dataset(data_dir: str, mode: str = "binary") -> pd.DataFrame:
+    """Full pipeline: load → merge → clean → return student-level dataframe.
+
+    mode: 'binary'     → target is 0 (risk) or 1 (success)
+          'multiclass' → target is 0=Pass, 1=Distinction, 2=Fail, 3=Withdrawn
+    """
     tables = load_tables(data_dir)
 
-    info = binarize_target(tables["studentInfo"])
+    if mode == "multiclass":
+        info = encode_multiclass_target(tables["studentInfo"])
+    else:
+        info = binarize_target(tables["studentInfo"])
     vle_agg = aggregate_vle(tables["studentVle"])
     assess_agg = aggregate_assessments(tables["studentAssessment"], tables["assessments"])
 

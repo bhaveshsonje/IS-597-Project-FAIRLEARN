@@ -1,0 +1,12 @@
+{
+  "logistic_regression_rw": {
+    "accuracy": 0.726,
+    "f1": 0.7301,
+    "auc": 0.8229
+  },
+  "random_forest_rw": {
+    "accuracy": 0.7441,
+    "f1": 0.7408,
+    "auc": 0.817
+  }
+}
