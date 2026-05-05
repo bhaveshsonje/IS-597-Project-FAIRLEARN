@@ -1,0 +1,166 @@
+# FairLearn: Fair and Explainable Student Performance Prediction
+
+**IS 597: Human-Centered Data Science — Final Project**
+Angad Chaudhry (angadc2) | Bhavesh Chandrakant Sonje (bsonje2)
+University of Illinois Urbana-Champaign
+
+GitHub: https://github.com/bhaveshsonje/IS597_Project
+
+---
+
+## Project Overview
+
+This project builds a fair and explainable ML pipeline for predicting student outcomes in online courses using the OULAD dataset. It covers binary classification (at-risk vs. success), multiclass classification (Pass / Distinction / Fail / Withdrawn), fairness auditing across demographic groups (gender, disability, age band), bias mitigation via reweighting and per-group thresholding, and SHAP-based explainability — all accessible through an interactive Streamlit dashboard.
+
+---
+
+## Requirements
+
+- Python 3.10+
+
+Install all dependencies:
+
+```bash
+pip install -r requirements.txt
+pip install streamlit plotly
+```
+
+`requirements.txt` includes: `pandas>=2.0`, `numpy>=1.24`, `scikit-learn>=1.3`, `matplotlib>=3.7`, `shap>=0.44`, `xgboost>=2.0`
+
+---
+
+## Dataset Setup
+
+This project uses the **Open University Learning Analytics Dataset (OULAD)**.
+
+1. Download from: https://analyse.kmi.open.ac.uk/open_dataset
+2. Unzip and place the CSV files in a folder named `Dataset/` in the project root.
+
+The following files are required inside `Dataset/`:
+- `studentInfo.csv`
+- `studentAssessment.csv`
+- `studentVle.csv`
+- `assessments.csv`
+
+> The `Dataset/` folder is excluded from the repository (files are too large). All pre-computed results are already included in `results/`.
+
+---
+
+## Running the Full Pipeline
+
+To regenerate all results from scratch (~5–10 minutes):
+
+```bash
+python src/run_all.py
+```
+
+This runs all 9 stages in order:
+
+1. Binary baseline — Logistic Regression + Random Forest with fairness + mitigation
+2. Binary advanced — all 4 models (LR, RF, XGBoost, MLP) with fairness + mitigation + SHAP
+3. Multiclass baseline — LR + RF, 4-class prediction
+4. Multiclass advanced — all 4 models, balanced and unbalanced variants
+5. Per-module binary — separate binary models for BBB, FFF, DDD, CCC
+6. Per-module multiclass — separate multiclass models per course module
+7. Summary table — aggregated comparison across all experiments
+8. Accuracy-fairness tradeoff plot
+9. Report assets — consolidated figures and tables
+
+### Running individual stages
+
+```bash
+python src/run_experiment.py             # Binary baseline (LR + RF)
+python src/run_advanced_binary.py        # Binary all 4 models
+python src/run_multiclass.py             # Multiclass baseline
+python src/run_advanced.py               # Multiclass all 4 models
+python src/run_per_course.py             # Per-module binary
+python src/run_per_course_multiclass.py  # Per-module multiclass
+```
+
+> All scripts must be run from the **project root directory**, not from inside `src/`.
+
+---
+
+## Running the Dashboard
+
+```bash
+streamlit run app.py
+```
+
+Then open http://localhost:8501 in your browser.
+
+The app provides:
+- Student profile input (demographics + early engagement)
+- Real-time at-risk prediction from 4 models
+- SHAP waterfall explanation for the XGBoost prediction
+- Fairness context panel showing known TPR gaps for the student's demographic group
+
+The app reads pre-computed results and saved models from `results/`. These are already included. To retrain models after running the pipeline, run:
+
+```bash
+python src/save_models.py
+```
+
+---
+
+## Project Structure
+
+```
+IS597_project/
+├── app.py                            # Streamlit dashboard
+├── requirements.txt
+├── src/
+│   ├── data_prep.py                  # OULAD loading, cleaning, merging
+│   ├── features.py                   # Feature matrix construction
+│   ├── models.py                     # Model training (LR, RF, XGBoost, MLP)
+│   ├── fairness.py                   # TPR gap computation per demographic group
+│   ├── mitigation.py                 # Reweighting + per-group thresholding
+│   ├── explain.py                    # SHAP explainability
+│   ├── run_all.py                    # Master script — runs full pipeline
+│   ├── run_experiment.py             # Binary baseline pipeline
+│   ├── run_advanced_binary.py        # Binary all-models pipeline
+│   ├── run_multiclass.py             # Multiclass baseline pipeline
+│   ├── run_advanced.py               # Multiclass all-models pipeline
+│   ├── run_per_course.py             # Per-module binary pipeline
+│   ├── run_per_course_multiclass.py  # Per-module multiclass pipeline
+│   ├── save_models.py                # Serialize trained models for the app
+│   ├── summarize_results.py          # Cross-experiment summary table
+│   ├── tradeoff_plot.py              # Accuracy vs. fairness scatter plot
+│   └── build_report_assets.py        # Consolidated report figures
+├── results/
+│   ├── advanced_binary/              # Binary 4-model results, fairness, SHAP
+│   ├── advanced_balanced/            # Multiclass balanced results
+│   ├── advanced_unbalanced/          # Multiclass unbalanced results
+│   ├── binary_aggregated/            # Binary baseline (LR + RF) results
+│   ├── multiclass/                   # Multiclass baseline results
+│   ├── per_course_mc/                # Per-module multiclass results
+│   ├── BBB/ FFF/ DDD/ CCC/           # Per-module binary results
+│   ├── report_assets/                # Consolidated figures for report
+│   ├── summary.csv                   # Cross-experiment comparison table
+│   └── tradeoff_plot.png             # Accuracy-fairness tradeoff figure
+└── Dataset/                          # OULAD CSVs — NOT included, download separately
+```
+
+---
+
+## Key Results
+
+**Binary classification (aggregated dataset, XGBoost):**
+
+| Model | Accuracy | F1 | AUC-ROC |
+|---|---|---|---|
+| Logistic Regression | 0.697 | 0.697 | 0.772 |
+| Random Forest | 0.722 | 0.722 | 0.795 |
+| **XGBoost** | **0.732** | **0.732** | **0.813** |
+| MLP | 0.720 | 0.720 | 0.806 |
+
+**Fairness gaps (XGBoost binary):**
+- Disability: 9.8% lower TPR for disabled students (No=0.776 vs Yes=0.678)
+- Gender: 6.2% lower TPR for male students (F=0.801 vs M=0.739)
+- Age band: 8.7% lower TPR for 0–35 vs 35–55
+
+**After per-group thresholding:**
+- LR disability gap: 10.3% → 0.07% (99.3% reduction)
+- Near-zero accuracy cost across all 4 models and all 4 course modules
+
+**Best per-module AUC:** DDD module, LR — 0.854
