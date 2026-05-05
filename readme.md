@@ -33,7 +33,7 @@ pip install streamlit plotly
 
 This project uses the **Open University Learning Analytics Dataset (OULAD)**.
 
-1. Download from: https://analyse.kmi.open.ac.uk/open_dataset
+1. Download from: [https://analyse.kmi.open.ac.uk/open_dataset](https://www.kaggle.com/datasets/anlgrbz/student-demographics-online-education-dataoulad)
 2. Unzip and place the CSV files in a folder named `Dataset/` in the project root.
 
 The following files are required inside `Dataset/`:
